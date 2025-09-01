@@ -5,6 +5,16 @@ import { userRepository } from '../repositories/userRepository'
 import { sendConfirmationEmail } from '../services/emailService'
 
 export const authController = {
+  login: async (c: any) => {
+    try {
+      const { username, password } = await c.req.json();
+      const result = await authService.login(username, password);
+      return c.json(result, 200);
+    } catch (err: any) {
+      return c.json({ error: err.message }, 401);
+    }
+  },
+
   register: async (c: Context) => {
     try {
       const body = await c.req.valid('json') as RegisterUserInput

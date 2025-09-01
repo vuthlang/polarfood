@@ -2,8 +2,11 @@ import { userRepository } from '../repositories/userRepository'
 import { RegisterUserInput } from '../schemas/user'
 import { hash } from 'bcrypt'
 import { randomBytes } from "crypto"
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 const { findByEmail, findByUsername, create } = userRepository
+const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 export const authService = {
   register: async (data: RegisterUserInput) => {
@@ -25,5 +28,25 @@ export const authService = {
     })
 
     return user
+  },
+
+  login: async (identifier: string, password: string) => {
+    const user = await userRepository.findByUsername(identifier);
+    if (!user) {
+      throw new Error("Utilisateur introuvable");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      throw new Error("Mot de passe incorrect");
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, username: user.username },
+      JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    return { token, user };
   },
 }
