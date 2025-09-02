@@ -1,8 +1,8 @@
 import { Context } from 'hono'
 import { authService } from '../services/authService'
-import { RegisterUserInput } from '../schemas/user'
+import { RegisterUserInput } from '../schemas/auth'
 import { userRepository } from '../repositories/userRepository'
-import { sendConfirmationEmail } from '../services/emailService'
+import { sendConfirmationEmail, sendResetPasswordEmail } from '../services/emailService'
 
 export const authController = {
   login: async (c: any) => {
@@ -51,4 +51,102 @@ export const authController = {
       <p>Tu peux maintenant fermer cette page et retourner dans l'application.</p>
     `)
   },
+
+  forgotPassword: async (c: Context) => {
+    try {
+      const { email } = await c.req.json() as { email: string }
+
+      const user = await authService.requestPasswordReset(email)
+      const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password?token=${user.token}`
+
+      await sendResetPasswordEmail(email, user.token, resetUrl)
+
+      return c.json({ message: "Email de réinitialisation envoyé" })
+    } catch (err: any) {
+      return c.json({ error: err.message || 'Erreur lors de l\'envoi du mail' }, 400)
+    }
+  },
+
+  showResetPasswordPage: async (c: Context) => {
+    const token = c.req.query('token') || ''
+    if (!token) {
+      return c.text('Token manquant', 400)
+    }
+
+    const html = `
+      <!doctype html>
+      <html lang="fr">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <title>Réinitialiser le mot de passe</title>
+        <style>
+          body { font-family: Arial, sans-serif; background:#f7fafc; color:#111827; display:flex; align-items:center; justify-content:center; height:100vh; }
+          .card { background:#fff; padding:24px; border-radius:12px; box-shadow:0 5px 20px rgba(0,0,0,0.05); width: 100%; max-width:420px; }
+          input { width:100%; padding:12px; margin:8px 0; border:1px solid #e5e7eb; border-radius:8px; }
+          button { width:100%; padding:12px; background:#111827; color:#fff; border:none; border-radius:8px; cursor:pointer; }
+          .muted { color:#6b7280; font-size:14px; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h2>Réinitialiser votre mot de passe</h2>
+          <p class="muted">Entrez votre nouveau mot de passe ci-dessous.</p>
+
+          <form action="/auth/reset-password?token=${token}" method="POST">
+            <input type="hidden" name="token" value="${token}" />
+            <label>Nouveau mot de passe</label>
+            <input type="password" name="password" required minlength="8" />
+            <label>Confirmer le mot de passe</label>
+            <input type="password" name="confirmPassword" required minlength="8" />
+            <button type="submit">Modifier le mot de passe</button>
+          </form>
+        </div>
+      </body>
+      </html>
+    `
+    return c.html(html)
+  },
+
+  resetPassword: async (c: Context) => {
+    try {
+      let body: any = null
+      try {
+        body = await c.req.json()
+      } catch (e) {
+        try {
+          const fd = await c.req.formData()
+          body = Object.fromEntries(fd.entries())
+        } catch (e2) {
+          body = null
+        }
+      }
+
+      if (!body) return c.json({ error: 'Request body is required' }, 400)
+
+      const token = body.token as string
+      const password = body.password as string
+      const confirmPassword = body.confirmPassword as string
+
+      if (!token) return c.json({ error: 'Token manquant' }, 400)
+      if (!password || !confirmPassword) return c.json({ error: 'Champs mot de passe requis' }, 400)
+      if (password !== confirmPassword) return c.json({ error: 'Les mots de passe ne correspondent pas' }, 400)
+
+      await authService.resetPassword(token, password)
+
+      const acceptHeader = c.req.header('accept') || ''
+      const isHtmlForm = typeof body === 'object' && c.req.header('content-type')?.includes('application/x-www-form-urlencoded')
+      if (isHtmlForm || acceptHeader.includes('text/html')) {
+        return c.html(`
+          <h1>Mot de passe modifié ✅</h1>
+          <p>Votre mot de passe a bien été mis à jour. Vous pouvez maintenant <a href="/auth/login">vous connecter</a>.</p>
+        `)
+      }
+
+      return c.json({ message: 'Mot de passe réinitialisé avec succès' })
+    } catch (err: any) {
+      return c.json({ error: err.message || 'Erreur' }, 400)
+    }
+  },
+
 }

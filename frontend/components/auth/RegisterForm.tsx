@@ -56,7 +56,7 @@ export default function RegisterForm() {
         [
           {
             text: "OK",
-            onPress: () => router.push("/login")
+            onPress: () => router.push("/auth/login")
           }
         ]
       );
@@ -68,7 +68,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <View className="bg-white rounded-[20px] px-[25px] pt-[30px] pb-[40px]">
+    <View className="bg-white rounded-[20px] px-[25px] py-[30px]">
       <FormInput
         icon="person-outline"
         placeholder="Nom d'utilisateur"
@@ -114,7 +114,7 @@ export default function RegisterForm() {
         message="Déjà un compte ?"
         linkText="Se connecter"
         color="FF6B6B"
-        onPress={() => router.push("/login")}
+        onPress={() => router.push("/auth/login")}
       />
     </View>
   );

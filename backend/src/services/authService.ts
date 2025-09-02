@@ -49,4 +49,24 @@ export const authService = {
 
     return { token, user };
   },
+
+  requestPasswordReset: async (email: string) => {
+    const user = await userRepository.findByEmail(email);
+    if (!user) throw new Error('EMAIL_NOT_FOUND');
+
+    const token = randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 15 * 60 * 1000);
+    await userRepository.saveResetToken(user.id, token, expires);
+
+    return { token, expires };
+  },
+
+  resetPassword: async (token: string, newPassword: string) => {
+    const user = await userRepository.findByResetToken(token);
+    if (!user) throw new Error('TOKEN_INVALID_OR_EXPIRED');
+
+    const passwordHash = await hash(newPassword, 10);
+    await userRepository.updatePassword(user.id, passwordHash);
+    await userRepository.clearResetToken(user.id);
+  }
 }

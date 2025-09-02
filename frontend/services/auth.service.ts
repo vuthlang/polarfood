@@ -29,4 +29,29 @@ export const AuthService = {
       throw error;
     }
   },
+
+  forgotPassword: async (email: string) => {
+    try {
+      const response = await api.post("/auth/forgot-password", { email });
+      return response.data;
+    } catch (err: any) {
+      throw new Error(
+        err.response?.data?.error || "Erreur lors de l'envoi de l'email"
+      );
+    }
+  },
+
+  resetPassword: async (token: string, password: string, confirmPassword: string) => {
+    try {
+      const response = await api.post(`/auth/reset-password?token=${token}`, {
+        password,
+        confirmPassword,
+      });
+      return response.data;
+    } catch (err: any) {
+      throw new Error(
+        err.response?.data?.error || "Erreur lors de la réinitialisation du mot de passe"
+      );
+    }
+  },
 };

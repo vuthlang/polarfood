@@ -39,14 +39,14 @@ export default function LoginForm({
   };
 
   return (
-    <View className="bg-white rounded-[20px] px-[25px] pt-[30px] pb-[40px]">
+    <View className="bg-white rounded-[20px] px-[25px] py-[30px]">
       <Text className="text-2xl font-bold text-gray-800 mb-8 text-center">
         Se connecter
       </Text>
 
       <FormInput
         icon="person-outline"
-        placeholder="Nom d'utilisateur ou email"
+        placeholder="Nom d'utilisateur"
         value={formData.username}
         onChangeText={v => onChange('username', v)}
         error={errors.username}
@@ -65,7 +65,7 @@ export default function LoginForm({
       />
 
       <View className="flex-row justify-between items-center mb-6">
-        <TouchableOpacity onPress={handleForgotPassword} className="ml-auto">
+        <TouchableOpacity onPress={() => router.push("/auth/forgot-password")} className="ml-auto">
           <Text className="text-sm text-secondary font-medium">
             Mot de passe oublié ?
           </Text>
