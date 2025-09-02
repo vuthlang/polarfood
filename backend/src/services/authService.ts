@@ -1,5 +1,5 @@
 import { userRepository } from '../repositories/userRepository'
-import { RegisterUserInput } from '../schemas/user'
+import { RegisterUserInput } from '../schemas/auth'
 import { hash } from 'bcrypt'
 import { randomBytes } from "crypto"
 import bcrypt from 'bcryptjs'
