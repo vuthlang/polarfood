@@ -3,6 +3,7 @@ import { Hono } from 'hono'
 import 'dotenv/config'
 import authRouter from './routes/auth'
 import placeRouter from './routes/place'
+import visitRouter from './routes/visit'
 
 const app = new Hono()
 
@@ -12,6 +13,7 @@ app.get('/', (c) => {
 
 app.route('/auth', authRouter)
 app.route('/place', placeRouter)
+app.route('/visit', visitRouter)
 
 serve({
   fetch: app.fetch,
