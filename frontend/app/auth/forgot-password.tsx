@@ -15,7 +15,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { AuthService } from '@/services/auth.service';
+import { AuthService } from '@/services/authService';
 
 interface ResetFormData {
   email: string;
