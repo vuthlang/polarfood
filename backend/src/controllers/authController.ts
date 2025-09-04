@@ -28,10 +28,10 @@ export const authController = {
       return c.json({ id: user.id, username: user.username, email: user.email })
     } catch (err) {
       if (err instanceof Error && err.message === 'USERNAME_EXISTS') {
-        return c.json({ error: 'Ce nom d\'utilisateur est déjà utilisé.' }, 400)
+        return c.json({ error: 'Username already exists' }, 400)
       }
       if (err instanceof Error && err.message === 'EMAIL_EXISTS') {
-        return c.json({ error: 'Cet email est déjà utilisé.' }, 400)
+        return c.json({ error: 'Email already exists' }, 400)
       }
       return c.json({ error: err }, 500)
     }
@@ -39,10 +39,10 @@ export const authController = {
 
   verify: async (c: any) => {
     const token = c.req.query("token")
-    if (!token) return c.json({ error: "Token manquant" }, 400)
+    if (!token) return c.json({ error: "Missing token" }, 400)
 
     const user = await userRepository.findByToken(token)
-    if (!user) return c.json({ error: "Token invalide" }, 400)
+    if (!user) return c.json({ error: "Invalid token" }, 400)
 
     await userRepository.verifyUser(user.id)
 
@@ -61,16 +61,16 @@ export const authController = {
 
       await sendResetPasswordEmail(email, user.token, resetUrl)
 
-      return c.json({ message: "Email de réinitialisation envoyé" })
+      return c.json({ message: "Password reset email sent" })
     } catch (err: any) {
-      return c.json({ error: err.message || 'Erreur lors de l\'envoi du mail' }, 400)
+      return c.json({ error: err.message || 'Failed to send reset email' }, 400)
     }
   },
 
   showResetPasswordPage: async (c: Context) => {
     const token = c.req.query('token') || ''
     if (!token) {
-      return c.text('Token manquant', 400)
+      return c.text('Missing token', 400)
     }
 
     const html = `
@@ -128,9 +128,9 @@ export const authController = {
       const password = body.password as string
       const confirmPassword = body.confirmPassword as string
 
-      if (!token) return c.json({ error: 'Token manquant' }, 400)
-      if (!password || !confirmPassword) return c.json({ error: 'Champs mot de passe requis' }, 400)
-      if (password !== confirmPassword) return c.json({ error: 'Les mots de passe ne correspondent pas' }, 400)
+      if (!token) return c.json({ error: 'Missing token' }, 400)
+      if (!password || !confirmPassword) return c.json({ error: 'Password fields are required' }, 400)
+      if (password !== confirmPassword) return c.json({ error: 'Passwords do not match' }, 400)
 
       await authService.resetPassword(token, password)
 
@@ -143,7 +143,7 @@ export const authController = {
         `)
       }
 
-      return c.json({ message: 'Mot de passe réinitialisé avec succès' })
+      return c.json({ message: 'Password successfully reset' })
     } catch (err: any) {
       return c.json({ error: err.message || 'Erreur' }, 400)
     }
