@@ -1,6 +1,6 @@
-import { eq, gt } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { db } from '../db/client'
-import { place } from '../models/place'
+import { place } from '../db/schema/place'
 
 export const placeRepository = {
   create: async (data: {

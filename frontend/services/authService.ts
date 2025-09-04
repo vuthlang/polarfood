@@ -14,6 +14,7 @@ export const AuthService = {
       );
     }
   },
+
   register: async (data: {
     username: string;
     email: string;

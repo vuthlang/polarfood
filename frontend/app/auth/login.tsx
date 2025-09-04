@@ -11,7 +11,8 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import AuthHeader from '@/components/auth/AuthHeader';
 import LoginForm from '@/components/auth/LoginForm';
-import { AuthService } from '@/services/auth.service';
+import { AuthService } from '@/services/authService';
+import { AuthStorage } from '@/utils/authStorage';
 
 interface LoginFormData {
   username: string;
@@ -59,33 +60,14 @@ export default function Login() {
     try {
       const { username, password } = formData;
       const res = await AuthService.login(username, password);
+      await AuthStorage.saveToken(res.token);
 
-      Alert.alert(
-        "Connexion réussie !",
-        `Bienvenue ${res.user.username} 👋`,
-        [
-          {
-            text: "Continuer",
-            onPress: () => router.replace("/(tabs)")
-          },
-        ]
-      );
+      router.replace("/(tabs)")
     } catch (err: any) {
       Alert.alert("Erreur", err.message || "Identifiants incorrects");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleForgotPassword = () => {
-    Alert.alert(
-      'Mot de passe oublié',
-      'Un email de réinitialisation sera envoyé à votre adresse email.',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        { text: 'Envoyer', onPress: () => console.log('Send reset email') }
-      ]
-    );
   };
 
   return (

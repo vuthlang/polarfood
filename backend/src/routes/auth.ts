@@ -6,6 +6,7 @@ import { registerUserSchema } from '../schemas/auth'
 const auth = new Hono()
 
 auth.post('/register', zValidator('json', registerUserSchema), authController.register)
+auth.post('/login', authController.login)
 auth.get('/reset-password', authController.showResetPasswordPage)
 auth.get('/verify', authController.verify)
 // auth.post('/forgot-password', zValidator('json', forgotPasswordSchema), authController.forgotPassword);

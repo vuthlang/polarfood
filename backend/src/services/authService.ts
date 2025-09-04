@@ -41,10 +41,14 @@ export const authService = {
       throw new Error("Mot de passe incorrect");
     }
 
+    if (!user.isVerified) {
+      throw new Error('Compte non confirmé');
+    }
+
     const token = jwt.sign(
       { userId: user.id, username: user.username },
       JWT_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: '1h' }
     );
 
     return { token, user };

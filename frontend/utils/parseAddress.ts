@@ -5,6 +5,8 @@ interface Address {
   postalCode?: string;
   country?: string;
   fullAddress?: string;
+  lat?: number;
+  lng?: number;
 };
 
 export function parseAddress(details: any): Address {
@@ -19,6 +21,8 @@ export function parseAddress(details: any): Address {
     city: getComponent("locality") || getComponent("postal_town"),
     postalCode: getComponent("postal_code"),
     country: getComponent("country"),
+    lat: details?.geometry?.location?.lat,
+    lng: details?.geometry?.location?.lng,
     fullAddress: details?.formatted_address || "",
   };
 }
