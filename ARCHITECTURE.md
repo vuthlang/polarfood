@@ -1,37 +1,61 @@
 # Architecture du projet
 
-- Indiquer si votre projet est monolithique ou en microservices
-- Schéma du découpage (Controller → Service → Repository)
-- Liste et rôle des design patterns utilisés
-- Explication des responsabilités de chaque couche
-- Justification des choix techniques
+L’architecture du projet est divisée en deux parties principales : **frontend** (application mobile React Native) et **backend** (API Hono avec Drizzle).  
+Chaque partie est organisée de manière modulaire afin de séparer clairement la logique métier, les composants UI et les ressources.
 
+## Frontend
 
+```
+frontend/
+│
+├── app/               ← Écrans/pages de l’application
+│   ├── tabs/          ← Navigation par onglets (Home, Profile, Settings…)
+│   └── auth/          ← Écrans liés à l’authentification (Login, Register…)
+│
+├── assets/            ← Ressources statiques
+│   ├── fonts/         ← Polices personnalisées
+│   └── images/        ← Images, icônes, logos
+│
+├── components/        ← Composants réutilisables
+│   ├── auth/          ← Composants spécifiques à l’auth (formulaires, inputs…)
+│   └── ui/            ← Composants génériques d’interface (boutons, modales…)
+│
+├── constants/         ← Variables globales (couleurs, tailles, clés, etc.)
+├── hooks/             ← Hooks personnalisés (useAuth, useFetch, etc.)
+├── scripts/           ← Scripts utilitaires (build, génération, migration…)
+├── services/          ← Appels API et logique métier (authService, userService…)
+└── utils/             ← Fonctions utilitaires pures (formatage de dates, helpers…)
+```
 
-src/\
-├── models/             ← Drizzle table definitions \
-├── repositories/       ← CRUD + accès DB\
-├── services/           ← logique métier\
-├── controllers/        ← handlers HTTP (signupHandler, etc.)\
-├── schemas/            ← Zod schemas (signupSchema, etc.)\
-├── middleware/         ← JWT, auth, vérification rôle\
-├── routes/             ← fichiers route.ts pour Hono (par module)\
-├── db/                 ← config drizzle + migrations\
-├── utils/              ← helpers (hash, token, etc.)\
-└── app.ts              ← point d'entrée Hono\
+## Backend
 
+```
+backend/ 
+│
+├── src/
+   ├── models/             ← Drizzle table definitions
+   ├── repositories/       ← CRUD + accès DB
+   ├── services/           ← logique métier
+   ├── controllers/        ← handlers HTTP (signupHandler, etc.)
+   ├── schemas/            ← Zod schemas (signupSchema, etc.)
+   ├── middleware/         ← JWT, auth, vérification rôle<br />
+   ├── routes/             ← fichiers route.ts pour Hono (par module)
+   ├── db/                 ← config drizzle + migrations
+   ├── utils/              ← helpers (hash, token, etc.)
+   └── app.ts              ← point d'entrée Hono
+```
 
 
 ## 🧱 Type d’architecture
 
-> Le projet adopte une **architecture monolithique modulaire**.
+Le projet adopte une **architecture monolithique modulaire**.
 
 Bien que le projet soit structuré en modules (auth, places, visits, etc.), toutes les fonctionnalités du backend sont regroupées dans **un seul service Hono**, avec une API REST unifiée.
 Ce choix est **adapté à la taille et au contexte du projet** (développement solo, durée limitée), tout en maintenant une **séparation claire des fonctionnalités**.
 
 ---
 
-## 🗂️ Schéma du découpage
+## Schéma du découpage backend
 
 ```
 Route (Controller)
@@ -51,7 +75,7 @@ place.route.ts → place.service.ts → place.repo.ts
 
 ---
 
-## 🧩 Rôles des couches
+## Rôles des couches
 
 | Couche                 | Rôle                                                                                                             |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -61,7 +85,7 @@ place.route.ts → place.service.ts → place.repo.ts
 
 ---
 
-## 🧠 Design patterns utilisés
+##  Design patterns utilisés
 
 | Pattern                               | Description                                      | Pourquoi                                                    |
 | ------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------- |
@@ -71,7 +95,7 @@ place.route.ts → place.service.ts → place.repo.ts
 
 ---
 
-## 🔧 Justification des choix techniques
+## Justification des choix techniques
 
 | Élément                       | Choix                                          | Justification                                                                                                                                                                    |
 | ----------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -86,7 +110,7 @@ place.route.ts → place.service.ts → place.repo.ts
 
 ---
 
-## ✅ Résultat attendu
+## Résultat attendu
 
 Cette architecture garantit :
 

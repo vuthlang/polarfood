@@ -1,7 +1,7 @@
 # Polarfood
 
 ## Présentation du projet
-Polarfood est une application inspirée de Polarsteps, mais pensée pour les foodies.\
+Polarfood est une application inspirée de Polarsteps, mais pensée pour les foodies.<br>
 Elle permet de documenter, noter et retrouver facilement tous les restaurants et plats testés.
 
 
@@ -25,14 +25,14 @@ Exemple de body:
   "password": "mypassword123"
 }
 ```
-```POST /auth/login``` → Se connecter.\
-```POST /auth/forgot-password``` → Envoyer un email de réinitialisation.\
-```POST /auth/reset-password``` → Réinitialiser le mot de passe.\
-```GET /auth/verify?token=``` → Vérifier un compte via token.\
-```GET /auth/reset-password?token=``` → Afficher la page de réinitialisation.\
+```POST /auth/login``` → Se connecter.<br>
+```POST /auth/forgot-password``` → Envoyer un email de réinitialisation.<br>
+```POST /auth/reset-password``` → Réinitialiser le mot de passe.<br>
+```GET /auth/verify?token=``` → Vérifier un compte via token.<br>
+```GET /auth/reset-password?token=``` → Afficher la page de réinitialisation.<br>
 
 ### Lieux (/place)
-```POST /place/``` → Créer un lieu. \
+```POST /place/``` → Créer un lieu. <br>
 ```
 {
   "name": "Pizza Roma",
@@ -44,15 +44,15 @@ Exemple de body:
   "placeType": "restaurant"
 }
 ```
-```GET /place/:id``` → Récupérer un lieu par ID.\
-```GET /place/``` → Lister tous les lieux.\
+```GET /place/:id``` → Récupérer un lieu par ID.<br>
+```GET /place/``` → Lister tous les lieux.<br>
 
 ### Visites (/visit) (protégé par JWT)
-```POST /visit/``` → Créer une visite (ajouter une note/commentaire).\
+```POST /visit/``` → Créer une visite (ajouter une note/commentaire).<br>
 ```GET /visit/:id``` → Récupérer une visite par ID.\
-```GET /visit/``` → Lister toutes les visites.\
-```PUT /visit/:id``` → Mettre à jour une visite.\
-```DELETE /visit/:id``` → Supprimer une visite.\
+```GET /visit/``` → Lister toutes les visites.<br>
+```PUT /visit/:id``` → Mettre à jour une visite.<br>
+```DELETE /visit/:id``` → Supprimer une visite.<br>
 
 
 ## Lancer le projet
@@ -72,4 +72,4 @@ npm install
 npm run dev
 ```
 Le backend sera disponible sur http://localhost:3000
- (ou le port défini dans les variables d’environnement).
+ (ou le port défini dans le .env).
