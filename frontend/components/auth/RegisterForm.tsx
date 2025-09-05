@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import FormInput from './FormInput';
 import SubmitButton from './SubmitButton';
-import { AuthService } from '@/services/auth.service';
+import { AuthService } from '@/services/authService';
 import AuthSwitchLink from './AuthSwitchLink';
 import { router } from 'expo-router';
 
